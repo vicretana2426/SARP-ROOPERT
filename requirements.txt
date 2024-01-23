@@ -6,3 +6,8 @@ rocketcea==1.1.28
 rocketprops==0.1.3
 scipy==1.9.1
 sympy==1.11.1
+
+pandas==2.1.3
+tk==0.1.0
+To run PySimpleGUI you will need to run: "sudo apt-get install python3-tk"
+You will also need to run "sudo apt-get install gfortran"
