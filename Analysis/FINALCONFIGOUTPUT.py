@@ -26,7 +26,7 @@ import os
 "make program that generates valid corss sections"
 
 
-def fixedRSquareChanelSetup(params,xlist, rlist,chlist,chanelToLandRatio,twlist,nlist,helicitylist = None,dxlist = None):# MAKE SURE TO PASS SHIT  ALREADY FLIPPED
+def fixedRSquareChanelSetup(params, xlist, rlist, chlist, chanelToLandRatio, twlist, nlist, helicitylist = None, dxlist = None):# MAKE SURE TO PASS SHIT  ALREADY FLIPPED
     
     if helicitylist is None:
         helicitylist = np.ones(np.size(xlist))*math.pi/2
