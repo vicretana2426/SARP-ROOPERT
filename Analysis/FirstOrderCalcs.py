@@ -33,6 +33,8 @@ from rocketprops.rocket_prop import get_prop
 import re as regex
 import Toolbox.Constant as const
 from scipy import interpolate
+
+
 def SpreadsheetSolver(args : dict, defaults : dict = None): #defaults can be things like gravity, etc.
     paramnames = [
     'thrust', #Newtons
@@ -286,12 +288,13 @@ def SpreadsheetSolver(args : dict, defaults : dict = None): #defaults can be thi
             except:
                 print('Couldnt calculate ' + param + " first time around")
 
+
     #Do this many times so that if we need calcualted values for other values we can get them the second time around
     changecount = -1
     attempts = 0
     while not changecount == 0 and attempts <= 5:
         changecount = 0
-        attempts+= 1
+        attempts += 1
         for param in list(params):
             if params[param] is None:
                 try:
