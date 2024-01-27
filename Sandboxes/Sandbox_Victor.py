@@ -3,6 +3,10 @@
 '''This module will be used for debugging, feel free
 to play around here as much as you would like !!'''
 
-galensVariable = 10
+"hello everyone"
 
-print(globals()['galensVariable'])
+
+
+
+
+
