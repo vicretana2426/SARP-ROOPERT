@@ -1,5 +1,7 @@
 "This is for Galen"
 
+mySave = r"/mnt/c/Users/gbhof/Documents/ROOPERT-Save-Files"
+
 paramnames = [
     'thrust', #Newtons
     'time', #s
@@ -94,3 +96,16 @@ try:
     print(globals()['thrust'](params))
 except:
     print("helo")
+
+'''
+I've been using this for testing
+
+import RocketDatabase as RD
+
+galenRocket = RD.Rocket("Galen")
+
+galenRocket.Define_Random_Params()
+
+galenRocket.Print_Info()
+
+'''
