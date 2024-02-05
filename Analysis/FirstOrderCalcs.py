@@ -33,99 +33,99 @@ from rocketprops.rocket_prop import get_prop
 import re as regex
 import Toolbox.Constant as const
 from scipy import interpolate
-def SpreadsheetSolver(args : dict, defaults : dict = None): #defaults can be things like gravity, etc.
-    paramnames = [
+def SpreadsheetSolver(args : dict, defaults : dict = None): #defaults can be things like gravity, etc. arguments in spreadsheetsolver are from the dict(? does this mean any dict?)
+    paramnames = [ #parameter names
     'thrust', #Newtons
-    'time', #s
-    'impulse', #N*s
-    'rho_ox', #Kg/M^3
-    'rho_fuel', #Kg/M^3
+    'time', #s, burn time
+    'impulse', #N*s,
+    'rho_ox', #Kg/M^3, density of oxidizer
+    'rho_fuel', #Kg/M^3, density of fuel
     'pc', #Pa, if cr is specified, this is Pressure at end of combustor
-    'pinj',#Pa, only useful if you specify CR, otherwise assumed to be pc
-    'pe', #Pa
-    'g', #m/s^2
-    'rm', #o/f by weight
-    'phi', #ratio from stoich (1 is stoich, >1 is fuel rich)
+    'pinj',#Pa, only useful if you specify CR, otherwise assumed to be pc, pressure at injector plate
+    'pe', #Pa, pressure at nozzle exit
+    'g', #m/s^2, gravitational acceleration
+    'rm', #o/f by weight, mixture ratio - oxidizer divided by fuel
+    'phi', #ratio from stoich (1 is stoich, >1 is fuel rich, used when determing mixture ratio BY WEIGHT)
     'at', # m^2, area of throat
-    'rt', # m, radius of throat 
+    'rt', # m, radius of throat
     'cr', # contraction ratio
     'rc', # m, combustion chamber radius
     'ac', # m^2, area combustion chamber
-    'l_star', # m, volume cc/area throat
+    'l_star', # m, chamber volume cc/area throat, characteristic length
     'mol_weight', # kg/mol
-    'gamma', # in cc
-    'gamma_exit', # in exit
-    'gamma_throat', # in throat
+    'gamma', # in cc, specific heat ratio
+    'gamma_exit', # gamma at exit
+    'gamma_throat', # gamma in throat
     'isp', # s
     'temp_c', # K, chamber temp
     'rg', # specific gas constant (SI units if what they are)
-    'pr_throat',
-    'rho_throat',
-    'temp_e',
-    'v_exit',
-    'a_exit',
-    'mach_exit',
-    'temp_throat',
-    'p_throat',
-    'v_throat',
-    'mdot',
-    'mdot_ox',
-    'mdot_fuel',
-    'er',
-    'cstar',
-    'cf',
-    'c_eff',
-    'rho_av',
-    'vc',
-    'theta_con',
-    'lc',
-    'theta_div',
-    'ln_conical',
-    'ln_bell',
-    'throat_radius_curvature',
-    'ae',
-    're',
-    'nv',
-    'nvstar',
-    'nf',
-    'nw',
-    'fuelname',
-    'oxname',
-    'CEA',
-    'pambient',
-    'cf_efficiency', # Huzel and Huang page 16
-    'isp_efficiency',
+    'pr_throat', #Prandtl number in throat
+    'rho_throat', #density at throat
+    'temp_e', #temperature at exit
+    'v_exit', #velocity of exiting gases
+    'a_exit', #speed of sound at nozzle exit
+    'mach_exit', #nozzle exit mach number
+    'temp_throat', #temperature at throat
+    'p_throat', # equal to pc^2 divided by Pexit. Not sure why this is happening. It will give us a pressure. @@@@ REVIEW LATER. Pexit at throat should be the result. Check line 272
+    'v_throat', #speed of gas at throat. because the flow at throat should be mach 1, we don't multiply the speed of sound at the throat by a mach number
+    'mdot', #mass flow rate
+    'mdot_ox', #oxidizer mass flow rate
+    'mdot_fuel', #fuel mass flow rate
+    'er', #nozzle Expansion area Ratio
+    'cstar', #characteristic velocity
+    'cf', #thrust coefficient
+    'c_eff', #not referred to in FAC. May not be used anywhere wip function?
+    'rho_av', #not referred to in FAC. May not be used anywhere wip function?
+    'vc', #not referred to in FAC. May not be used anywhere wip function?
+    'theta_con', #not referred to in FAC. May not be used anywhere wip function?
+    'lc', #defined on line 418. check Hazel and Huang pg 73 for more info - this is combustion chamber length.
+    'theta_div', #not referred to in FAC. May not be used anywhere wip function?
+    'ln_conical', #defined on line 459. used in FINALCONFIGOUTPUT
+    'ln_bell', #not referred to in FAC. May not be used anywhere wip function?
+    'throat_radius_curvature', #not referred to in FAC. May not be used anywhere wip function?
+    'ae', #ae(params) on line 461. area of nozzle exit = area of throat * expansion ratio, or 'ae' = 'at' * 'er'
+    're', #defined on line 463 radius of exit
+    'nv', #not referred to in FAC. May not be used anywhere wip function?
+    'nvstar', #not referred to in FAC. May not be used anywhere wip function?
+    'nf', #not referred to in FAC. May not be used anywhere wip function?
+    'nw', #not referred to in FAC. May not be used anywhere wip function?
+    'fuelname', #name of fuel
+    'oxname', #name of oxidizer
+    'CEA', #this key's value is actually the object CEA_Obj(...), and the ... holds the values of all the parameters that have been inputted. More on CEA_Obj can be found at RocketCEA
+    'pambient', #Pa, ambient pressure
+    'cf_efficiency', # Huzel and Huang page 16 - correction factor gives you actual thrust coefficient from ideal thrust coefficient calculated
+    'isp_efficiency', # Huzel and Huang page 16 - correction factor gives you actual isp from ideal isp calculated
     'thetac', # converging section angle
     'thetai', # diverging angle at throat
-    'thetae',# diverign angle at exit
-    'kin_visc_fuel',
-    'kin_visc_ox',
-    'dyn_visc_fuel',
-    'dyn_visc_ox',
-    'P_tank_ox',
-    'P_tank_fuel',
-    'numengines',
-    'propmass'] 
+    'thetae', # diverign angle at exit
+    'kin_visc_fuel', #defined on line 473... doesn't seem to be used anywhere? function itself seems to be doing stuff.
+    'kin_visc_ox', #defined on line 488... function is doing stuff but its not called
+    'dyn_visc_fuel', #defined on line 496... function is doing stuff but its not called
+    'dyn_visc_ox', #defined on line 510... function is doing stuff but its not called
+    'P_tank_ox', #believe this is the pressure of the oxidizer tank. not sure
+    'P_tank_fuel', #believe this is the pressure of the fuel tank. not sure
+    'numengines', #number of engines
+    'propmass']#total propellant mass
+#proposal - order these parameters alphabetically?
 
-
-    params = dict.fromkeys(paramnames)
+    params = dict.fromkeys(paramnames) #turns the sequence of parameter names into keys and a dictionary
 
     params['g'] = 9.81
 
     #HERE IS WHERE YOU SET DEFAULT VALUES EARLY SO THINGS DONT BREAK IF YOU FORGET TO PASS STUFF
     if params['pambient'] is None:
-        params['pambient']=14.7*const.psiToPa
+        params['pambient']=14.7*const.psiToPa #14.7 psi * conversion factor to Pa gives 101,352.972 Pa, standard Earth pressure
     if params['pe'] is None:
-        if 'er' not in args.keys() or args['er'] is None:
+        if 'er' not in args.keys() or args['er'] is None: #if there is no area ratio available then we just set nozzle exit pressure to ambient pressure
             params['pe'] = params['pambient']
     if params['cf_efficiency'] is None:
-        params['cf_efficiency'] = .95
+        params['cf_efficiency'] = .95 #automatically assumes thrust coefficient correction factor is .95
     if params['isp_efficiency'] is None:
-        params['isp_efficiency'] = .9
+        params['isp_efficiency'] = .9 #automatically assumes isp correction factor is .9
 
-    for arg in list(args):
+    for arg in list(args): #checks each arg for errors/exceptions
         try:
-            params[arg] = args[arg]
+            params[arg] = args[arg] #this sets arg in params equal to arg in args
         except:
             try:
                 print("Parameter " + arg + " isn't supported or is mispelled. Did you mean " +
@@ -145,7 +145,7 @@ def SpreadsheetSolver(args : dict, defaults : dict = None): #defaults can be thi
                                         pressure_units='Pa', temperature_units='K', sonic_velocity_units='m/s',
                                         enthalpy_units='J/kg', density_units='kg/m^3', specific_heat_units='J/kg-K',
                                         viscosity_units='millipoise', thermal_cond_units='W/cm-degC', fac_CR=None,
-                                        make_debug_prints=False)
+                                        make_debug_prints=False) #defines basis we're going off in CEA calculator for later use of CEA_Obj as a base function. more information on RocketCEA website
                 if params['pe'] is None:
                     if params['rm'] is None:
                         params['rm'] = rm(params)
@@ -159,7 +159,7 @@ def SpreadsheetSolver(args : dict, defaults : dict = None): #defaults can be thi
                                         viscosity_units='millipoise', thermal_cond_units='W/cm-degC', fac_CR=None,
                                         make_debug_prints=False)
                 # here we calculate a bunch of stuff assuming ideal, then calculate cr, then make a new cea object with that cr
-                
+
                 togglerm = False
                 toggleer = False
                 togglerc = False
@@ -170,14 +170,14 @@ def SpreadsheetSolver(args : dict, defaults : dict = None): #defaults can be thi
                     params['pe'] = pe(params)
                 if params['pc'] is None:
                     params['pc'] = pc(params)
-                    
+
                 if params['er'] is None:
                     params['er'] = er(params)
                     toggleer = True
                 if params['rc'] is None:
                     params['rc'] = rc(params)
                     togglerc = True
-                molandgam = params['CEA'].get_Chamber_MolWt_gamma(Pc=params['pc'], MR=params['rm'], eps=params['er']),  # kg/mol
+                molandgam = params['CEA'].get_Chamber_MolWt_gamma(Pc=params['pc'], MR=params['rm'], eps=params['er']),  # kg/mol, from rocketcea, Pc = combustion end pressure, MR = mixing ratio, eps = Nozzle Expansion Area Ratio
                 params['mol_weight'] = molandgam[0][0]
                 params['gamma'] = molandgam[0][1]
                 if params['cf'] is None:
@@ -202,11 +202,11 @@ def SpreadsheetSolver(args : dict, defaults : dict = None): #defaults can be thi
                     params['er'] = None
                 if togglerc:
                     params['rc'] = None
-                
+
                 PinjOverPcombEstimate = 1.0 + 0.54 / params['cr'] ** 2.2 # FROM https://rocketcea.readthedocs.io/en/latest/finite_area_comb.html
                 params['pinj']=params['pc']*params['CEA'].cea_obj.get_Pinj_over_Pcomb(
                     Pc=params['CEA'].Pc_U.uval_to_dval(params['pc'])*PinjOverPcombEstimate, MR=1.0, fac_CR=params['cr'])
-                
+
                 params['cr'] = None
                 if params['pe'] is None:
                         if params['rm'] is None:
@@ -256,7 +256,7 @@ def SpreadsheetSolver(args : dict, defaults : dict = None): #defaults can be thi
         throatTrasnport = params['CEA'].get_Throat_Transport(Pc=params['pc'], MR=params['rm'], eps=params['er'],
                                                              frozen=0)
         params['rg'] = const.R/ params['mol_weight'],  # specific gas constant (SI units if what they are)
-        params['pr_throat'] = throatTrasnport[3]
+        params['pr_throat'] = throatTrasnport[3] #Prandtl no.
         params['rho_throat'] = \
         params['CEA'].get_Densities(Pc=params['pc'], MR=params['rm'], eps=params['er'], frozen=0, frozenAtThroat=0)[1]
         params['temp_e'] = temps[2]
@@ -269,7 +269,7 @@ def SpreadsheetSolver(args : dict, defaults : dict = None): #defaults can be thi
         params['v_exit'] = params['mach_exit'] * params['a_exit']
 
         params['temp_throat'] = temps[1]
-        params['p_throat'] = params['pc']*params['CEA'].get_Throat_PcOvPe(Pc=params['pc'], MR=params['rm'])
+        params['p_throat'] = params['pc']*params['CEA'].get_Throat_PcOvPe(Pc=params['pc'], MR=params['rm']) #Pc^2 divided by Pressure at exit of throat is the result. Should be Pressure at exit of throat, so the multiply sign should be a divide sign
         params['v_throat'] = sonicvelos[1]
 
         chambertransport = params['CEA'].get_Chamber_Transport(Pc=params['pc'], MR=params['rm'], eps=params['er'], frozen=0)
@@ -360,7 +360,7 @@ def rho_fuel(params): #Kg/M^3MPLEMENT THIS USING FLUID PROPS
                                             params['pc'] / const.psiToPa)
         else:
             return 1000 * pObj.SG_compressed(temp*const.degKtoR,
-                                            params['P_tank_fuel'] / const.psiToPa)           
+                                            params['P_tank_fuel'] / const.psiToPa)
     except AttributeError:
         print('Fuel does not exist, assuming its a water ethanol blend')
         ethpercent = int(regex.search(r'\d+', params['fuelname']).group())/100
@@ -414,7 +414,7 @@ def cr(params): # contraction ratio
         return CRInterpolator(params['rt']*2)
     else:
         return params['rc']**2/(params['rt']**2)
-def lc(params):
+def lc(params): #this actually gives lc a value - lc is combustion chamber length
     CLInterpolator = interpolate.interp1d([i * const.inToM for i in [.2, .5, 1, 2, 5, 10]],
                                           [i * const.inToM for i in [1.8,3,4,5,7.5, 10]],
                                           kind='linear')  # CL vs Throat Diam, visually copied from textbook
@@ -431,11 +431,11 @@ def ac(params): # m^2, area combustion chamber
         return params['at']*params['cr']
 def l_star(params): # m, volume cc/area throat
     return 40*const.inToM # THIS IS KERALOX LSTAR FROM HUZEL AND HUANG PAGE 72 WE HSOULD DO MORE RESEARCH
-def mdot(params):
+def mdot(params): #mass flow rate
     return params['thrust']/params['isp']/(const.gravity)
-def mdot_ox(params):
+def mdot_ox(params): #oxidizer mass flow rate
     return params['rm']*params['mdot']/(params['rm']+1)
-def mdot_fuel(params):
+def mdot_fuel(params): #fuel mass flow rate
     return params['mdot']/(params['rm']+1)
 def er(params):
     if params['pe'] < 10000:
@@ -449,13 +449,13 @@ def cf(params):
     return params['cf_efficiency']*((2*params['gamma']**2)/(params['gamma']-1)*(2/(params['gamma']+1))**((params['gamma']+1)/(params['gamma']-1))*(1-(params['pe']/params['pc'])**((params['gamma']-1)/params['gamma'])))**.5+params['er']*(params['pe']-params['pambient'])/params['pc']
 """def c_eff(params):
 def rho_av(params):
-def vc(params):
+def vc(params): 
 def theta_con(params):
 def theta_div(params):
 
 def ln_bell(params):
 """
-def ln_conical(params):
+def ln_conical(params): #is this guy used anywhere bruh
     return (params['re']-params['rt'])/math.sin(15*math.pi/180)
 def ae(params):
     return params['at']*params['er']
