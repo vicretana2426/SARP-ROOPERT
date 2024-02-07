@@ -37,7 +37,11 @@ DM.saveDirectory = r"/mnt/c/Users/gbhof/Documents/ROOPERT-Save-Files"
 
 To make the code work, create your ROOPERT-Save-Files and paste in the address down here:'''
 
-DM.saveDirectory = r"/mnt/c/Users/gbhof/Documents/ROOPERT-Save-Files"
+if not os.path.exists(r"/tmp/SaveFiles"):
+    os.mkdir(r"/tmp/SaveFiles")
+
+
+DM.saveDirectory = r"/tmp/SaveFiles"
 
 
 #Make sure that the user defined a save directory. If they didn't, throw an error that prevents the rest of the program from running
