@@ -1,20 +1,6 @@
 '''
 Running this module will theoretically startup everything needed for ROOPERT to run
 
-Before this program can be run, the user needs to create a directory (folder) somewhere in their computer that isn't going
-to be python-restricted (so Documents, Desktop are good choices whereas Program Files probably won't work) named "ROOPERT-Save-Files".
-Then, they need to copy the exact path of that directory and put it into the variable "saveDirectory" otherwise the program won't run.
-I think that because vscode is running is linux, you also have to create the directory in linux. You can do this in the terminal or  
-install a file manager to help you:
-
-Run the following commands to install a file manager:
-1. sudo add-apt-repository universe
-2. sudo apt update
-3. sudo apt install dolphin
-
-And to open just type in "dolphin" to the linux terminal and press enter
-To be honest dolphin was really buggy in wsl I'd recommend learning how to navigate around directories in the terminal it's not too hard
-
 General startup sequence something like the following:
 
 1. On first startup, create directories where needed
@@ -29,19 +15,13 @@ import RocketDatabase as RD
 import DataManager as DM
 
 
-'''This is where user needs to specify save directory for their computer. Make sure it is named "ROOPERT-Save-Files" exactly, or ROOPERT
-will not run. The r needs to be in front of the string so that python ignores the backslashes. 
+'''This is where ROOPERT will check to see if you have already created a save file. If not, it will create one'''
 
-For example, Line 29 could read:
-DM.saveDirectory = r"/mnt/c/Users/gbhof/Documents/ROOPERT-Save-Files"
-
-To make the code work, create your ROOPERT-Save-Files and paste in the address down here:'''
-
-if not os.path.exists(r"/tmp/SaveFiles"):
-    os.mkdir(r"/tmp/SaveFiles")
+if not os.path.exists(r"/tmp/ROOPERT-Save-Files"):
+    os.mkdir(r"/tmp/ROOPERT-Save-Files")
 
 
-DM.saveDirectory = r"/tmp/SaveFiles"
+DM.saveDirectory = r"/tmp/ROOPERT-Save-Files"
 
 
 #Make sure that the user defined a save directory. If they didn't, throw an error that prevents the rest of the program from running
