@@ -9,6 +9,11 @@ import csv
 a name and a dictionary params (this is a dictionary that David has used freqruently throughout his code), but in the future it can hold
 as many variables as we need it to'''
 
+'''Important note on the keyword self. Self refers to any variable that is specific to an instance of an object. Any variable or 
+function that changes based on which instance of an object we are referencing needs to have 'self' in it. For variables, use
+self.varName. For functions, include self as the first argument.
+'''
+
 class Rocket:
 
     '''This is the constructor of the class. It is set up specifically so that all it takes to instantiate a rocket is the name.
