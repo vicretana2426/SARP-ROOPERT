@@ -10,18 +10,21 @@ General startup sequence something like the following:
 
 '''
 
+import getpass
 import os
 import RocketDatabase as RD
 import DataManager as DM
 
+'''getpass.getuser returns the name of the linux user so that ROOPERT can create its save directory in the users home folder where
+access is permitted'''
+
+username = getpass.getuser()
+DM.saveDirectory = os.path.join(os.path.join(r"/home", username), "ROOPERT-Save-Files")
 
 '''This is where ROOPERT will check to see if you have already created a save file. If not, it will create one'''
 
-if not os.path.exists(r"/tmp/ROOPERT-Save-Files"):
-    os.mkdir(r"/tmp/ROOPERT-Save-Files")
-
-
-DM.saveDirectory = r"/tmp/ROOPERT-Save-Files"
+if not os.path.exists(DM.saveDirectory):
+    os.mkdir(DM.saveDirectory)
 
 
 #Make sure that the user defined a save directory. If they didn't, throw an error that prevents the rest of the program from running
@@ -62,6 +65,5 @@ for rocketSaveFile in DM.rocketSaveFiles:
 '''END OF DEVELOPMENT -- everything after this point is just my personal testing'''
 for rocket in DM.rockets:
     rocket.Print_Info()
-
 
 
