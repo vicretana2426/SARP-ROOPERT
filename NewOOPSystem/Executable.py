@@ -52,15 +52,15 @@ except:
 #Save the save path for the rocket save files to the data manager so that other modules can access it
 DM.rocketSaveFilePath = os.path.join(DM.saveDirectory, "Rocket-Save-Files")
 #Now, compile a list of all the saved rocket names to a list rocketSaveFiles
-DM.rocketSaveFiles = os.listdir(DM.rocketSaveFilePath)
+DM.rocketSaveFolders = os.listdir(DM.rocketSaveFilePath)
 
 '''Now it's time to actually instantiate the Rocket objects from the rocket class. The goal of this is to turn all of the information
 in the Rocket-Save-Files directory into the memory of the program when it runs. Do note that all this module does is provide the 
 name of the Rocket. The module RocketDatabase only needs the name of the rocket to initialize the rocket and all the information
 saved in its save folder'''
 
-for rocketSaveFile in DM.rocketSaveFiles:
-    DM.rockets.append(RD.Rocket(rocketSaveFile))
+for rocketSaveFolder in DM.rocketSaveFolders:
+    DM.rockets.append(RD.Rocket(rocketSaveFolder))
 
 '''END OF DEVELOPMENT -- everything after this point is just my personal testing'''
 for rocket in DM.rockets:

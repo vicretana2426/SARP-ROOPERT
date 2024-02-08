@@ -8,7 +8,7 @@ objects and will contain all the saved rocket configurations after Executable.py
 saveDirectory = "not yet defined" #This is the save directory for everything ROOPERT, named ROOPERT-Save-Files. See Executable.py to define this
 roopertSaveFiles = None #List of all of the directories in ROOPERT-Save-Files
 rocketSaveFilePath = None #The path where all the rocket save folders are
-rocketSaveFiles = None #List of all the saved rocket names 
+rocketSaveFolders = None #List of all the saved rocket names 
 rockets = [] #List of all the instantiated rocket objects
 
 

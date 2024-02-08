@@ -25,6 +25,8 @@ class Rocket:
         self.name = name
         #This will set the save path to the name of the rocket, whether this directory has already been created or not
         self.savePath = os.path.join(DM.rocketSaveFilePath, self.name)
+
+        
         
         '''Attempt to create a save directory. If this is successful, define a blank set of params and save it so that a 
         params.csv file is created. If unsuccessful, this means a save directory is already created. Load the params.csv in this
@@ -53,6 +55,18 @@ class Rocket:
                     self.params[param] = row[param]
             #Log
             print("Loaded Existing Save File for " + self.name)
+
+        self.rocketSaveFiles = os.listdir(self.savePath)
+
+        for rocketSaveFile in self.rocketSaveFiles:
+            if (rocketSaveFile == "Charts"):
+                print("we found a chart")
+            elif (rocketSaveFile == "Engine"):
+                print("We found an engine")
+            else:
+                print("We don't know what the heck " + rocketSaveFile + " is!")
+        print(self.rocketSaveFiles)
+
     
 
     '''This function simply prints out the identifying characteristics of the rocket.'''
