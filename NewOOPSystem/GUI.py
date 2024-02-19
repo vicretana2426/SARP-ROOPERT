@@ -30,18 +30,21 @@ defaults = { #default values ROOPERT starts with
         'rc' : .11, # m
         'thetac' : (35*math.pi/180) # Pa
 }
+
 sg.theme('Dark Purple 3')
 
 params = dm.blankParams
 unitdict = {}
 functionlist = ['func1', 'func2', 'func3']
 
+# parse data from defaults into params
 for key in params.keys():
     try:
         params[key] = defaults[key]
     except:
         params[key] = None
 
+# parse data from unitdict in Datamanager to here
 for key in params.keys():
     try:
         unitdict[key] = dm.unitdict[key]
@@ -51,20 +54,25 @@ for key in params.keys():
 name_column = [[]]
 input_column = [[]]
 
+# create the input boxes
 for key in params.keys():
     name_column.append([sg.Text(key)])
-    input_column.append([sg.InputText(default_text=params[key], key=key, size = 10), sg.Text(unitdict[key])])
+    input_column.append([sg.InputText(default_text=params[key], key=key, size = 10, enable_events=True), sg.Text(unitdict[key])])
 
+# Bottom part of the GUI
 function_column = [
-    [sg.Text("Function Name"), sg.Combo(functionlist, size = 10,  default_value=functionlist[0], k="-FUNC NAME-", enable_events=True, readonly=True)],
+    [sg.Text("Function Name"), sg.Combo(functionlist, size = 10,  default_value=(functionlist[0] if functionlist[0] is not None else "No functions..." ), k="-FUNC NAME-", enable_events=True, readonly=True)],
     [sg.Button("Run Function")]
 ]
 
+# Layout of the whole GUI
 layout = [
     [
-        sg.Column(name_column),
-        sg.VSeperator(),
-        sg.Column(input_column),
+        sg.Column(
+            [
+                [sg.Column(name_column), sg.VSeperator(), sg.Column(input_column)], 
+            ], scrollable=True, size=(800, 450), vertical_scroll_only=True
+        ),
     ],
     [
         sg.Column(function_column),
@@ -73,10 +81,13 @@ layout = [
     ],
 ]
 
-window = sg.Window("ROOPERT", layout)
+window = sg.Window("ROOPERT", layout, size=(800, 600))
 
 while True:
     event, values = window.read()
     if event == sg.WIN_CLOSED:
-        break
+        break        
+    for key in params.keys():
+        if event == key:
+            params[key] = values[key]
 window.close()
