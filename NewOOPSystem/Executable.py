@@ -70,4 +70,6 @@ for rocket in DM.rockets:
 
 GUI.GUI_Start()
 
-print(DM.saveDirectory)
+
+'''Everything here will run after the GUI is closed'''
+
