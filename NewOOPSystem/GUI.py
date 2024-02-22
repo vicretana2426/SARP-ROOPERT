@@ -33,7 +33,7 @@ defaults = { #default values ROOPERT starts with
 
 sg.theme('Dark Purple 3')
 
-params = dm.blankParams
+params = dict.copy(dm.blankParams)
 unitdict = {}
 functionlist = ['func1', 'func2', 'func3']
 
