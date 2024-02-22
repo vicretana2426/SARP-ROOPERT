@@ -65,7 +65,7 @@ class Rocket:
                 print("We found an engine")
             else:
                 print("We don't know what the heck " + rocketSaveFile + " is!")'''
-        print(self.rocketSaveFiles)
+        #print(self.rocketSaveFiles)
 
     
 

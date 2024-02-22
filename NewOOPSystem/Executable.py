@@ -63,13 +63,13 @@ saved in its save folder'''
 for rocketSaveFolder in DM.rocketSaveFolders:
     DM.rockets.append(RD.Rocket(rocketSaveFolder))
 
-'''END OF DEVELOPMENT -- everything after this point is just my personal testing'''
-for rocket in DM.rockets:
-    rocket.Print_Info()
-
-
 GUI.GUI_Start()
 
 
 '''Everything here will run after the GUI is closed'''
+
+'''Make doubly sure everything has been saved in the rockets'''
+
+for rocket in DM.rockets:
+    rocket.Save_Data()
 
