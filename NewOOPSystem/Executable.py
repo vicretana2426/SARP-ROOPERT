@@ -14,6 +14,7 @@ import getpass
 import os
 import RocketDatabase as RD
 import DataManager as DM
+import GUI
 
 '''getpass.getuser returns the name of the linux user so that ROOPERT can create its save directory in the users home folder where
 access is permitted'''
@@ -67,3 +68,6 @@ for rocket in DM.rockets:
     rocket.Print_Info()
 
 
+GUI.GUI_Start()
+
+print(DM.saveDirectory)

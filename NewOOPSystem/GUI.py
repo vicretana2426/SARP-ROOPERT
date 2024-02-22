@@ -83,11 +83,13 @@ layout = [
 
 window = sg.Window("ROOPERT", layout, size=(800, 600))
 
-while True:
-    event, values = window.read()
-    if event == sg.WIN_CLOSED:
-        break        
-    for key in params.keys():
-        if event == key:
-            params[key] = values[key]
-window.close()
+
+def GUI_Start():
+    while True:
+        event, values = window.read()
+        if event == sg.WIN_CLOSED:
+            break        
+        for key in params.keys():
+            if event == key:
+                params[key] = values[key]
+    window.close()

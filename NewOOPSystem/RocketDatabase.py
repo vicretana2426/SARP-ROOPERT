@@ -58,13 +58,13 @@ class Rocket:
 
         self.rocketSaveFiles = os.listdir(self.savePath)
 
-        for rocketSaveFile in self.rocketSaveFiles:
+        '''for rocketSaveFile in self.rocketSaveFiles:
             if (rocketSaveFile == "Charts"):
                 print("we found a chart")
             elif (rocketSaveFile == "Engine"):
                 print("We found an engine")
             else:
-                print("We don't know what the heck " + rocketSaveFile + " is!")
+                print("We don't know what the heck " + rocketSaveFile + " is!")'''
         print(self.rocketSaveFiles)
 
     
