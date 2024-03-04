@@ -61,6 +61,8 @@ for key in params.keys():
 
 # Bottom part of the GUI
 function_column = [
+    [ sg.Button("Load Config"), sg.In(size=(15, 1), enable_events=True, key="-LOAD FOLDER-"), sg.FileBrowse(),],
+    [ sg.Button("Save Config"), sg.InputText(size=(25, 1),default_text='name', key='-SAVE FILE NAME-'), sg.Text("Save Folder Location"), sg.In(size=(15, 1), enable_events=True, key="-SAVE FOLDER-"), sg.FolderBrowse(),],
     [sg.Text("Function Name"), sg.Combo(functionlist, size = 10,  default_value=(functionlist[0] if functionlist[0] is not None else "No functions..." ), k="-FUNC NAME-", enable_events=True, readonly=True)],
     [sg.Button("Run Function")]
 ]
@@ -81,7 +83,7 @@ layout = [
     ],
 ]
 
-window = sg.Window("ROOPERT", layout, size=(800, 600))
+window = sg.Window("ROOPERT", layout, size=(900, 600))
 
 
 def GUI_Start():
